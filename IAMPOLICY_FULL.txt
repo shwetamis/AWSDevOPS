@@ -1,0 +1,70 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1425065597000",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances"
+            ],
+            "Resource": "arn:aws:ec2:us-west-2:405158962674:subnet/*",
+            "Condition": {
+                "StringEquals": {
+                    "ec2:Vpc": "arn:aws:ec2:us-west-2:405158962674:vpc/vpc-6cf20d0a"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": "ec2:RunInstances",
+            "Resource": [
+                "arn:aws:ec2:us-west-2:405158962674:instance/*",
+                "arn:aws:ec2:us-west-2:405158962674:volume/*",
+                "arn:aws:ec2:us-west-2:405158962674:network-interface/*",
+                "arn:aws:ec2:us-west-2:405158962674:key-pair/*",
+                "arn:aws:ec2:us-west-2:405158962674:security-group/*",
+                "arn:aws:ec2:us-west-2::image/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:DecodeAuthorizationMessage"
+            ],
+            "Resource": "*"
+        }
+        ,
+	 {
+			"Effect" : "Allow",
+			"Action" : [
+				"ec2:StartInstances",
+				"ec2:StopInstances",
+				"ec2:TerminateInstances"
+			],
+			"Resource" : [
+				"arn:aws:ec2:us-west-2:405158962674:instance/*"
+			],
+			"Condition" : {
+				"StringEquals" : {
+						"ec2:ResourceTag/DeploymentType" : "Development"
+				}
+			}
+		},
+	 {
+			"Effect" : "Deny",
+			"Action" : [
+				"ec2:StartInstances",
+				"ec2:StopInstances",
+				"ec2:TerminateInstances"
+			],
+			"Resource" : [
+				"arn:aws:ec2:us-west-2:405158962674:instance/*"
+			],
+			"Condition" : {
+				"StringEquals" : {
+						"ec2:ResourceTag/InstanceType" : "Infrastructure"
+				}
+			}
+		}
+    ]
+}

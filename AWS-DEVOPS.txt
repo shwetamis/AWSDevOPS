@@ -1,0 +1,23 @@
+AWS: DEVOPS
+SPOT instances: (in AWS)  are to improve performance and handle load in CICD.
+
+DNS VS ROUTE53 (dns takes 2 days, route 53 takes 1 min).
+
+Chef: All developments has to be done in ruby
+
+cloud formation is better than puppet and chef.
+EBS (elastic bean stock) template is calling cloud formation , you have to use on demand, can't use custom libs.
+EBS has limitations ( it only supports web langs.)
+
+LAmbda: code can only run for 5 mins. it can't run for more thank 5 mins.
+Lambda can be used if big application can be broken down into small micro services that can run parallel
+
+~/.aws/config file will have config for default location
+aws config is hidden file that will have your credentials that is not encrypted
+
+--query 'AccessKey.[AccessKeyID,SecretAccessKey]'
+access key and secrete access key you qry and it can be seen only during time of creation
+query uses JMESPath to query JSON files.
+
+
+

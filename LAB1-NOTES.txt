@@ -1,0 +1,104 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1425065597000",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances"
+            ],
+            "Resource": "arn:aws:ec2:us-west-2:405158962674:subnet/*",
+            "Condition": {
+                "StringEquals": {
+                    "ec2:Vpc": "arn:aws:ec2:us-west-2:405158962674:vpc/vpc-6cf20d0a"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": "ec2:RunInstances",
+            "Resource": [
+                "arn:aws:ec2:us-west-2:405158962674:instance/*",
+                "arn:aws:ec2:us-west-2:405158962674:volume/*",
+                "arn:aws:ec2:us-west-2:405158962674:network-interface/*",
+                "arn:aws:ec2:us-west-2:405158962674:key-pair/*",
+                "arn:aws:ec2:us-west-2:405158962674:security-group/*",
+                "arn:aws:ec2:us-west-2::image/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:DecodeAuthorizationMessage"
+            ],
+            "Resource": "*"
+        }
+        ,
+	 {
+			"Effect" : "Allow",
+			"Action" : [
+				"ec2:StartInstances",
+				"ec2:StopInstances",
+				"ec2:TerminateInstances"
+			],
+			"Resource" : [
+				"arn:aws:ec2:us-west-2:405158962674:instance/*"
+			],
+			"Condition" : {
+				"StringEquals" : {
+						"ec2:ResourceTag/DeploymentType" : "Development"
+				}
+			}
+		},
+	 {
+			"Effect" : "Deny",
+			"Action" : [
+				"ec2:StartInstances",
+				"ec2:StopInstances",
+				"ec2:TerminateInstances"
+			],
+			"Resource" : [
+				"arn:aws:ec2:us-west-2:405158962674:instance/*"
+			],
+			"Condition" : {
+				"StringEquals" : {
+						"ec2:ResourceTag/InstanceType" : "Infrastructure"
+				}
+			}
+		}
+    ]
+}
+
+
+LAB NOTES:
+Lab1ProdVPC 	vpc-b6f20dd0 		
+Lab1DevSubnetID 	subnet-8c3013c5 		
+Lab1Region 	us-west-2 		
+Lab1DevVPC 	vpc-6cf20d0a 		
+Lab1AccountID 	405158962674 		
+Lab1ProdNATID 	i-0fe611ae37fbddb25 		
+Lab1ProdSubnetID 	subnet-8f3013c6 		
+Lab1DevNATID 	i-0f0ad2abaf430b102 		
+Lab1AMIID 	ami-63b25203 		
+qwikLAB 	{"Connection": "ssh ec2-user@54.148.68.122"} 	Outputs to be used by qwikLAB 	
+
+
+VALUE OF PUBLIC DBS: ec2-54-148-68-122.us-west-2.compute.amazonaws.com
+
+IP:L 54.148.68.122
+
+
+aws ec2 run-instances --dry-run --instance-type "t2.small" --image-id ami-63b25203 --subnet-id subnet-8c3013c5
+aws ec2 run-instances --dry-run --instance-type "t2.small" --image-id ami-63b25203 --subnet-id subnet-8f3013c6
+
+aws sts decode-authorization-message --encoded-message WejorNnfuWqwU9KpvcyD85_IyQRRf_x6EBgQTwyFSGAQVhnR21yeblg7hSiIqJ0uVV6MK3hA5vSbTj4ZYGOBvuyUa8CiN4L65vAlARViCSeVfGdPCTaJod-Xhrg5_s_19cNqOHyVSGeDhUx-HJ2EpzYtNUA7TWrpbKMryg83OFDTojRQAmRFKZH7rvn9253S-7WlP0uoGk9DpG8FANYaRvg5ueUpJnbH_0uv7kEel3FUqzSG7pkfTOdJ7n7V0PZpgmAj7uvK-iplEy7oZxFgfAKvLHArWdLcksqY7qnsbNQjmCyX-29UxMfJuTtR3jjK-sPqqbL1bmrGjjhGXQdfOvvJb1VlbW4qPI_k6oLUeby6qE304yE04IDY7O2cOwuxyXhUGQvP3dznkFwAdAlk2nKvXSPtmvor7l0miRJeZ-fHSMi_N4AErz6Y_57KsCSxQIw4VTrfDm2SsiD4ASDHrXbBjNnxHZ72EXGmqjnzG-Rz-UvkMwMfhVWyKg0V4r3jN0N040qeGwHRnjNsjCEKfv9KhTYUhhy77TE --query 'DecodedMessage' | sed -e 's/\\"/"/g' -e 's/"{/{/g' -e 's/}"/}/g' | python -m json.tool
+
+
+aws sts decode-authorization-message --encoded-message WejorNnfuWqwU9KpvcyD85_IyQRRf_x6EBgQTwyFSGAQVhnR21yeblg7hSiIqJ0uVV6MK3hA5vSbTj4ZYGOBvuyUa8CiN4L65vAlARViCSeVfGdPCTaJod-Xhrg5_s_19cNqOHyVSGeDhUx-HJ2EpzYtNUA7TWrpbKMryg83OFDTojRQAmRFKZH7rvn9253S-7WlP0uoGk9DpG8FANYaRvg5ueUpJnbH_0uv7kEel3FUqzSG7pkfTOdJ7n7V0PZpgmAj7uvK-iplEy7oZxFgfAKvLHArWdLcksqY7qnsbNQjmCyX-29UxMfJuTtR3jjK-sPqqbL1bmrGjjhGXQdfOvvJb1VlbW4qPI_k6oLUeby6qE304yE04IDY7O2cOwuxyXhUGQvP3dznkFwAdAlk2nKvXSPtmvor7l0miRJeZ-fHSMi_N4AErz6Y_57KsCSxQIw4VTrfDm2SsiD4ASDHrXbBjNnxHZ72EXGmqjnzG-Rz-UvkMwMfhVWyKg0V4r3jN0N040qeGwHRnjNsjCEKfv9KhTYUhhy77TE
+
+
+aws sts decode-authorization-message --encoded-message <FailureMessage> --query 'DecodedMessage' | sed -e 's/\\"/"/g' -e 's/"{/{/g' -e 's/}"/}/g' | python -m json.tool
+
+aws ec2 stop-instances --instance-id i-0fe611ae37fbddb25
+
+aws ec2 stop-instances --instance-id i-0f0ad2abaf430b102
