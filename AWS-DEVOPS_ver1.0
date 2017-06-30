@@ -1,0 +1,131 @@
+AWS: DEVOPS
+SPOT instances: (in AWS)  are to improve performance and handle load in CICD.
+
+DNS VS ROUTE53 (dns takes 2 days, route 53 takes 1 min).
+
+Chef: All developments has to be done in ruby
+
+cloud formation is better than puppet and chef.
+EBS (elastic bean stock) template is calling cloud formation , you have to use on demand, can't use custom libs.
+EBS has limitations ( it only supports web langs.)
+
+LAmbda: code can only run for 5 mins. it can't run for more thank 5 mins.
+Lambda can be used if big application can be broken down into small micro services that can run parallel
+
+~/.aws/config file will have config for default location
+aws config is hidden file that will have your credentials that is not encrypted
+
+--query 'AccessKey.[AccessKeyID,SecretAccessKey]'
+access key and secrete access key you qry and it can be seen only during time of creation
+query uses JMESPath to query JSON files.
+
+
+AWS OpsWorks: its complex and has learning curve.
+
+CloudFormation:- Declarative prog language. Cost a penny to use it
+
+
+Template:
+Mappings : it has AMI values
+JSON
+{
+  ...
+  "Mappings" : {
+    "RegionMap" : {
+      "us-east-1" : { "32" : "ami-6411e20d", "64" : "ami-7a11e213" },
+      "us-west-1" : { "32" : "ami-c9c7978c", "64" : "ami-cfc7978a" },
+      "eu-west-1" : { "32" : "ami-37c2f643", "64" : "ami-31c2f645" },
+      "ap-southeast-1" : { "32" : "ami-66f28c34", "64" : "ami-60f28c32" },
+      "ap-northeast-1" : { "32" : "ami-9c03a89d", "64" : "ami-a003a8a1" }
+    }
+  },
+
+  "Resources" : {
+     "myEC2Instance" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+           "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "32"]},
+           "InstanceType" : "m1.small"
+        }
+     }
+ }
+ 
+ YAML
+ Mappings: 
+  RegionMap: 
+    us-east-1: 
+      32: "ami-6411e20d"
+      64: "ami-7a11e213"
+    us-west-1: 
+      32: "ami-c9c7978c"
+      64: "ami-cfc7978a"
+    eu-west-1: 
+      32: "ami-37c2f643"
+      64: "ami-31c2f645"
+    ap-southeast-1: 
+      32: "ami-66f28c34"
+      64: "ami-60f28c32"
+    ap-northeast-1: 
+      32: "ami-9c03a89d"
+      64: "ami-a003a8a1"
+Resources: 
+  myEC2Instance: 
+    Type: "AWS::EC2::Instance"
+    Properties: 
+      ImageId: !FindInMap [ RegionMap, !Ref "AWS::Region", 32 ]
+      InstanceType: m1.small
+	  
+	 ************************************************************************************************************************************
+	 If something fails in cloud formation and it roll-back by default, there is an option to set to whatever you want.
+	 ************************************************************************************************************************ 
+ResourceSinal: Your signal can be anything like loading web page etc..
+cloud init: executes scripts for cloud formation:
+
+below i am saying insatll MYSQL from yum package
+"AWS:CloudFormation::Init" :{
+"config":{
+"packages":{
+"yum" :{
+"mysql" :["5.5.2"],---> version of mysql
+}
+}
+
+Always specify version of the software don't leave it blank.
+
+CODEDEPLOY: is for continuous deployment
+Cloudformation:- for infrastructure
+you use both in conjunction
+
+lambda function has 2 set of permissions:
+1) execution
+2)invocation: what has the ability to call lambda ( restriction on who should call), since its public not whole world should be calling same function it depends on yr account.
+
+Aws lambda limitations:
+Drawbacks
+
+1. Tooling - Weak in general around documentation and deployment tools. Serverless framework is doing a good job here.
+
+2. Startup Latency - The time a function takes to respond to an event depends on a lot of factors and for the rest service I implemented it took more than few(5-6) seconds for a response and it varied from one request to another. So, implementing something like a real-time API may not be a good fit.
+
+3. Execution Duration - If Lambda functions run longer than 5 minutes, they are aborted. I think AWS Lambda will remove this constraint sometime in future.
+
+4. Monitoring/Debugging - There is limited help in this area and the way I debugged my functions was login into the AWS Lambda console and test functions to figure what was wrong.
+
+JENKINS:
+MASTER SAVE relation and it Autoscales. EC2 plugin that you will install in jenkins to bring the slave up. 
+Use SPOT instance to reduce the cost.
+
+
+AWS OpsWorks:
+CICD system uses Aws OPSwORKS
+Every stack have to have a layer
+It is management solution as well a sit manages your machine
+Saves upto 5 version of your application
+it can't create VPC, IAM etc, only cloud formation can do that
+
+ Mongo DB:- you need to launch diff instances and DYNMO DB autoScales
+ 
+ Dockers work at container level and Lambda works at Function level
+ 
+ 
+ For Deployment USE HOOKS ( code Deploy), as it gives you more flexibility.
